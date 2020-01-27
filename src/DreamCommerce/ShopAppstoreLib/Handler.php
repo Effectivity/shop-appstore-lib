@@ -264,4 +264,4 @@ class Handler implements HandlerInterface
 
         return $this->logger;
     }
-} 
+}

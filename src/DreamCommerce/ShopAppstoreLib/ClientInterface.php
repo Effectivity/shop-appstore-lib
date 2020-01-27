@@ -39,6 +39,13 @@ interface ClientInterface
     public function request(Resource $res, $method, $objectPath = null, $data = array(), $query = array());
 
     /**
+     * Performs Bulk resource request
+     *
+     * @param array $data
+     */
+    public function bulkRequest($data = array());
+
+    /**
      * @param HttpInterface $httpClient
      * @return $this
      */

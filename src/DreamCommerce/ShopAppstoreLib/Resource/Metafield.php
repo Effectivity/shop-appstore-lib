@@ -56,5 +56,5 @@ class Metafield extends Resource
 
         return $this->transformResponse($response, $isCollection);
     }
-    
+
 }

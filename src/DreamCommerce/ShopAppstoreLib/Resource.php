@@ -193,7 +193,7 @@ class Resource
      * get an array with specified criteria
      * @return array
      */
-    protected function getCriteria()
+    public function getCriteria()
     {
         $result = array();
 
@@ -248,6 +248,14 @@ class Resource
         $this->filters = json_encode($filters);
 
         return $this;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getFilters(): ?array
+    {
+        return json_decode($this->filters);
     }
 
     /**

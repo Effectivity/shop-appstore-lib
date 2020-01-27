@@ -438,5 +438,4 @@ class Http implements HttpInterface
 
         return $result;
     }
-
 }

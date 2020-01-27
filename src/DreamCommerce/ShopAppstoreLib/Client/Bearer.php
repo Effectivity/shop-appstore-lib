@@ -200,6 +200,49 @@ abstract class Bearer implements ClientInterface
         }
     }
 
+    public function bulkRequest($calls = [])
+    {
+        $this->authenticate();
+
+        $client = $this->getHttpClient();
+
+        $client->setSkipSsl($this->skipSsl);
+
+        foreach ($calls as &$call) {
+            $call['path'] = '/webapi/rest/'.$call['name'];
+        }
+
+        $headers = array(
+            'Authorization' => 'Bearer ' . $this->getAccessToken(),
+            'Content-Type' => 'application/json',
+            'Accept-Language' => $this->getLocale() . ';q=0.8'
+        );
+
+        $headers = $this->injectUserAgent($headers);
+        $bulkEndpoint = $this->entrypoint . '/bulk';
+
+        try {
+            return $client->post($bulkEndpoint, $calls, [], $headers);
+
+        } catch(HttpException $ex) {
+
+            // fire a handler for token reneval
+            $previous = $ex->getPrevious();
+            if($previous instanceof HttpException){
+                $response = $previous->getResponse();
+                $handler = $this->onTokenInvalidHandler;
+                if($response['error']=='unauthorized_client' && $handler){
+                    $exceptionHandled = $handler($this, $ex);
+                    if($exceptionHandled){
+                        return array();
+                    }
+                }
+            }
+
+            throw new Exception('HTTP error: '.$ex->getMessage(), Exception::API_ERROR, $ex);
+        }
+    }
+
     /**
      * @inheritdoc
      */
